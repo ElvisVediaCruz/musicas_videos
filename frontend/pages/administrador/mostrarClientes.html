@@ -1,0 +1,98 @@
+<div id="app-wrapper">
+    <main>
+      
+      <!-- Header -->
+      <section>
+        <h1 id="app-title">Mis Archivos</h1>
+        <p>Organiza y gestiona todos tus archivos en un mismo lugar</p>
+      </section>
+
+      <!-- Estadísticas -->
+      <section>
+        <div>
+          <p>Total de archivos</p>
+          <p id="total-files">0</p>
+        </div>
+      </section>
+
+      <!-- Barra de controles -->
+      <section>
+
+        <!-- Buscador -->
+        <div>
+          <input 
+            id="search-input"
+            type="text"
+            placeholder="Buscar archivos..."
+          >
+        </div>
+
+        <!-- Botón nuevo archivo -->
+        <button id="add-file-btn">
+          Nuevo archivo
+        </button>
+
+      </section>
+
+      <!-- Filtros -->
+      <section>
+        <button data-filter="Videos">Videos</button>
+        <button data-filter="Audio">Audio</button>
+      </section>
+
+      <!-- Contenedor de archivos -->
+      <section id="files-container">
+
+        <!-- Estado vacío -->
+        <div id="empty-state">
+          <p id="empty-message">No hay archivos aún</p>
+          <p>Haz clic en "Nuevo archivo" para empezar</p>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal Formulario -->
+  <div id="file-form-modal">
+
+    <div>
+      <h2>Agregar nuevo archivo</h2>
+
+      <form id="file-form">
+
+        <div>
+            <!-- en esta seccion tenemos que traer nuestro componente de crear video -->
+          <label for="file-type">Tipo de archivo</label>
+          <select id="file-type">
+            <option value="Videos">Video</option>
+            <option value="Audio">Audio</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="file-size">Tamaño (MB)</label>
+          <input 
+            id="file-size"
+            type="number"
+            placeholder="5"
+            min="0"
+            step="0.1"
+            required
+          >
+        </div>
+
+        <div>
+          <button type="button" id="cancel-btn">
+            Cancelar
+          </button>
+          <button type="submit" id="submit-btn">
+            Agregar
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+</div>
