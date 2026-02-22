@@ -7,6 +7,8 @@ import User from "./routes/user.route.js";
 
 const app = express();
 
+app.use("/uploads", express.static("uploads"));
+
 app.use("", Login);
 app.use("/User", User);
 app.use("/contenido", Contenido);

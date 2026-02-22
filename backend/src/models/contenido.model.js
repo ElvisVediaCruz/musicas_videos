@@ -2,7 +2,8 @@ import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
 import User from "./user.model.js";
 
-const Contenido = sequelize.define("Contenido", {
+
+const Contenido = sequelize.define("musica_video", {
     nombre: {
         type: DataTypes.STRING,
         allowNull: false
