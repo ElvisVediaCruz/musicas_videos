@@ -1,32 +1,17 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/database.js";
-import User from "./user.model.js";
 
-
-const Contenido = sequelize.define("musica_video", {
-    nombre: {
-        type: DataTypes.STRING,
-        allowNull: false
+const Contenido = sequelize.define("Contenido", {
+    id_contenido: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
     },
-    genero: {
-        type: DataTypes.STRING,
-    },
-    ruta: {
-        type:DataTypes.STRING,
-        allowNull: false,
-    },
-    tipo: {
+    formato: {
         type: DataTypes.STRING,
         allowNull: false
     }
 });
 
-User.hasMany(Contenido, {
-    foreignKey: "userId",
-    onDelete: "CASCADE",
-});
-Contenido.belongsTo(User, {
-    foreignKey: "userId"
-});
 
 export default Contenido;

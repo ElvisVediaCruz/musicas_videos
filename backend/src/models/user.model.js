@@ -5,6 +5,11 @@ import bcrypt, { compare } from "bcrypt";
 //buscar validaciones en sequelize
 
 const User = sequelize.define("User", {
+    id_user: {
+        type:DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     usuario: {
         type: DataTypes.STRING,
         allowNull: false
@@ -13,6 +18,14 @@ const User = sequelize.define("User", {
         type: DataTypes.STRING,
         allowNull: false
     },
+    rol:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    estado: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
 },{
     hooks: {
         beforeCreate: async (user) =>{
