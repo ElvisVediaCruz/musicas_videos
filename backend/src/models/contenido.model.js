@@ -7,9 +7,38 @@ const Contenido = sequelize.define("Contenido", {
         primaryKey: true,
         autoIncrement: true
     },
-    formato: {
-        type: DataTypes.STRING,
-        allowNull: false
+    titulo: {//m/v
+        type: DataTypes.STRING
+    },
+    artista: {//m
+        type: DataTypes.STRING
+    },
+    albun: {//m
+        type: DataTypes.STRING
+    },
+    genero: {//m/v
+        type: DataTypes.STRING
+    },
+    duracion: {//m/v
+        type: DataTypes.STRING
+    },
+    director:{//v
+        type: DataTypes.STRING
+    },
+    zice:{//m/v
+        type: DataTypes.STRING
+    },
+    extencion:{//m/v
+        type: DataTypes.STRING
+    },
+    rutaAlmacenamiento:{//m/v
+        type: DataTypes.STRING
+    },
+    nombreAlmacenamiento: {//m/v
+        type: DataTypes.STRING
+    },
+    tipo:{//m/v
+        type: DataTypes.STRING
     }
 });
 

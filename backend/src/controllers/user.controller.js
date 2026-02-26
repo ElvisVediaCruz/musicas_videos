@@ -1,27 +1,50 @@
-
-import { use } from "react";
 import User from "../models/user.model.js";
 
-export const createUser = async (req, res) => {
-    const {usuario, password, rol} = req.body;
-    const roles = ["administrador", "consumidor"]
+const roles = {
+    administrador: "administrador",
+    consumidor: "consumidor"};
+const estados = {
+    activo: "activo",
+    inactivo: "inactivo"
+}
+
+
+export const firstUSer = async (req, res) => {
+    const {user, password} = req.body
     try {
-        if (roles.includes(rol)){
+        const usuarios = await User.findAll();
+        if(usuarios.length != 0){
             return res.status(400).json({
-                message: "Rol inválido"
-            });
+                message: "ya se creo el super usuario"
+            })
         }
+        const userResult = await User.create({
+            usuario: user,
+            password: password,
+            estado: estado[0],
+            rol: roles[0]
+        })
+        res.status(201).json({
+            okey: true,
+            message: "Se creo el primer usuario",
+            userResult
+        })
+    } catch (error) {
+        res.status(500).json({error: error.message})
+    }
+}
+
+export const createUser = async (req, res) => {
+    const {usuario, password} = req.body;
+    try {
         const user = await buscar({usuario: usuario}, User);
         if(user) return res.status(409).json({message: "ya existe"});
-        if(rol === roles[0]){
-        const userRol = await buscar({rol: rol}, User);
-        if(userRol) return res.status(409).json({message: "solo puede existir un administrador"});
-        }
+        
         const userResult = await User.create({
             usuario: usuario,
             password: password,
-            estado: "inactivo",
-            rol: rol
+            estado: estados.inactivo,
+            rol: roles.consumidor
         })
         if(!userResult) return res.status(500).json({ message: "ocurrio un error al crear el usuario"});
         res.status(201).json({
@@ -36,16 +59,21 @@ export const updateUser = async (req, res) => {
     const {id} = req.params;
     try {
         const user = await User.findByPk(id);
+
         if (!user) return res.status(409).json({message: "usuario no encontrado"});
-        const camposPermitidos = ["usuario", "password", "estado"];
+
+        const camposPermitidos = ["password", "estado"];
         const datosActualizar = {};
         camposPermitidos.forEach(campo => {
         if (req.body[campo] !== undefined) {
             datosActualizar[campo] = req.body[campo];
         }
         });
-        await user.update(data);
-        res.status(201).json({
+        if(Object.hasOwn(datosActualizar, "estado")){
+            datosActualizar.estado = datosActualizar.estado === true ? estado[0] : estado[1];
+        }
+        await user.update(datosActualizar);
+        res.status(200).json({
             okey: true,
             message: "se actualizo el usuario"
         });
@@ -55,6 +83,9 @@ export const updateUser = async (req, res) => {
         });
     }
 }
+
+
+//realizar el get Users solo si se logeo
 export const getUsers = async (req, res) => {
     const {rol} = req.params;//la validacion se optendra de JWT
     //SOLO ES UNA PRUEBA PARA QUE NO SE PERMITA A CUALQUIER USUARIO OBTENER LOS DATOS
@@ -62,8 +93,8 @@ export const getUsers = async (req, res) => {
     let usuarios = null;
     try {
         //validar si la peticion la realizo un administrador
-        const administrador = await buscar({rol: rol}, User);
-        if(!administrador) return res.status(409).json({message: "no tienes los permisos necesarios"});
+        
+        if(!permisos({id_user: id}, User)) return res.status(409).json({message: "no tienes los permisos necesarios"});
         if (!id) {
             usuarios = await User.findAll({
                 attributes: { exclude: ["password"] }
@@ -90,11 +121,9 @@ export const getUsers = async (req, res) => {
         });
     }
 }
-
-
-async function permisos(){
-    //funcio para validar si el usuario tiene los suficientes permisos para
-    //realizar algun cambio
+async function permisos(modelo, where) {
+    const administrador = await buscar(where, modelo);
+    return administrador;
 }
 
 async function buscar(where, modelo){
