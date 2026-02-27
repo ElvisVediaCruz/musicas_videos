@@ -38,5 +38,10 @@ const User = sequelize.define("User", {
 User.prototype.validarPassword = async function(password) {
     return await bcrypt.compare(password, this.password);
 }
-
+User.beforeUpdate(async(user) => {
+    if(user.changed("password")){
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
+    }
+})
 export default User;

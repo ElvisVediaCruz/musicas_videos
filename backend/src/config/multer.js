@@ -1,52 +1,32 @@
+
+// src/middlewares/multer.js
 import multer from "multer";
 import path from "path";
-import fs from "fs";
-
-// Crear carpetas si no existen
-const crearCarpeta = (folder) => {
-  if (!fs.existsSync(folder)) {
-    fs.mkdirSync(folder, { recursive: true });
-  }
-};
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let folder = "uploads/";
-
-    if (file.mimetype.startsWith("audio/")) {
-      folder = "uploads/audio/";
-    } else if (file.mimetype.startsWith("video/")) {
-      folder = "uploads/video/";
-    }
-
-    crearCarpeta(folder);
-    cb(null, folder);
+    let tipo = file.mimetype.startsWith("audio")? "audio" : "video";
+    cb(null, "uploads/"+tipo);
   },
-
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    const nombreUnico = Date.now() + ext;
-    cb(null, nombreUnico);
+    cb(null, Date.now().toString() + ext);
   }
 });
-
 const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype.startsWith("audio/") ||
-    file.mimetype.startsWith("video/")
-  ) {
+  console.log("Filtrando archivo:", file.mimetype);
+
+  if (file.mimetype.startsWith("audio/") || file.mimetype.startsWith("video/")) {
     cb(null, true);
   } else {
-    cb(new Error("Solo se permiten archivos de audio o video"), false);
+    cb(new Error("Tipo no permitido"), false);
   }
 };
 
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 200 * 1024 * 1024 // 200MB máximo
-  }
+export const uploadMiddleware = multer({
+    storage,
+    fileFilter,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    }
 });
-
-export default upload;

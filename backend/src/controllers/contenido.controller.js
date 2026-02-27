@@ -1,23 +1,45 @@
 import Contenido from "../models/contenido.model.js";
+import {getMediaMetadata} from "../services/media.service.js";
 
 export const createContenido = async (req, res) => {
+    const archivo = req.file;
     const {
-        formato
-    } = req.body;
-    const {
-        idUsuario
-    } = req.params;
-    //emcriptar el id del usuario solo en el backend no en la bd
+        titulo,
+        artista, 
+        albun, 
+        genero, 
+        director } = req.body;
+    const { userId } = req.params;
     try {
-        const result = await Contenido.create({
-            formato: formato,
-            idUsuario: idUsuario
-        })
+        if(!archivo){
+            return res.status(400).json({ message: "No se envió archivo" });
+        }
+        const metadata = await getMediaMetadata(archivo.path);
+        const formato = metadata.metadata.format;
+        console.log("archivo", archivo)
+        console.log(metadata.metadata)
+        const datos = {
+            artista: artista,
+            titulo: titulo,
+            albun: albun,
+            genero: genero,
+            duracion: formato.duration,
+            director: director,
+            zice: formato.size,
+            extencion: formato.format_name,
+            rutaAlmacenamiento: formato.filename,
+            nombreAlmacenamiento: archivo.filename,
+            tipo: formato.format_name,
+            id_user: userId
+        }
+        console.log(datos)
+        await Contenido.create({
+            ...datos
+        });
         res.status(201).json({message: "se creo el contenido"});
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            
             error: error.message
         })
     }

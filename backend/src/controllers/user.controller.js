@@ -21,8 +21,8 @@ export const firstUSer = async (req, res) => {
         const userResult = await User.create({
             usuario: user,
             password: password,
-            estado: estado[0],
-            rol: roles[0]
+            estado: estados.activo,
+            rol: roles.administrador
         })
         res.status(201).json({
             okey: true,
@@ -56,7 +56,7 @@ export const createUser = async (req, res) => {
     }
 }
 export const updateUser = async (req, res) => {
-    const {id} = req.params;
+    const {id} = req.body;
     try {
         const user = await User.findByPk(id);
 
@@ -65,12 +65,12 @@ export const updateUser = async (req, res) => {
         const camposPermitidos = ["password", "estado"];
         const datosActualizar = {};
         camposPermitidos.forEach(campo => {
-        if (req.body[campo] !== undefined) {
-            datosActualizar[campo] = req.body[campo];
-        }
+            if (req.body[campo] !== undefined) {
+                datosActualizar[campo] = req.body[campo];
+            }
         });
         if(Object.hasOwn(datosActualizar, "estado")){
-            datosActualizar.estado = datosActualizar.estado === true ? estado[0] : estado[1];
+            datosActualizar.estado = datosActualizar.estado === true ? estados.activo : estados.inactivo;
         }
         await user.update(datosActualizar);
         res.status(200).json({
@@ -83,18 +83,12 @@ export const updateUser = async (req, res) => {
         });
     }
 }
-
-
 //realizar el get Users solo si se logeo
 export const getUsers = async (req, res) => {
-    const {rol} = req.params;//la validacion se optendra de JWT
-    //SOLO ES UNA PRUEBA PARA QUE NO SE PERMITA A CUALQUIER USUARIO OBTENER LOS DATOS
     const {id} = req.params;
     let usuarios = null;
     try {
-        //validar si la peticion la realizo un administrador
-        
-        if(!permisos({id_user: id}, User)) return res.status(409).json({message: "no tienes los permisos necesarios"});
+        console.log("soy el body", id)
         if (!id) {
             usuarios = await User.findAll({
                 attributes: { exclude: ["password"] }
@@ -112,8 +106,8 @@ export const getUsers = async (req, res) => {
             }
         }
         return res.status(200).json({
-        ok: true,
-        usuarios
+            ok: true,
+            usuarios
         });
     } catch (error) {
         return res.status(500).json({
