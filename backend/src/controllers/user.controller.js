@@ -88,7 +88,6 @@ export const getUsers = async (req, res) => {
     const {id} = req.params;
     let usuarios = null;
     try {
-        console.log("soy el body", id)
         if (!id) {
             usuarios = await User.findAll({
                 attributes: { exclude: ["password"] }
@@ -105,6 +104,7 @@ export const getUsers = async (req, res) => {
                 });
             }
         }
+        console.log("usuarios debueltos", usuarios);
         return res.status(200).json({
             ok: true,
             usuarios

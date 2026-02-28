@@ -3,6 +3,7 @@ import {generarToken} from "../middlewares/tokenjwt.js"
 
 export const loginUser = async (req, res) =>{
     const {usuario, password} = req.body;
+    console.log(req.body)
     try {
         const user = await User.findOne({
             where: {usuario}

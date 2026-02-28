@@ -74,7 +74,20 @@ export const deleteContenido = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             error: error.message
+        });
+    }
+}
+export const getContenido = async (req, res) => {
+    try {
+        const result = await Contenido.findAll();
+        res.status(200).json({
+            okey: true,
+            result
         })
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
     }
 }
 

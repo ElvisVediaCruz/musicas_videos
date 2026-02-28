@@ -16,6 +16,7 @@ export const validateCreateUser = [
 
 export const soloAdmin = (req, res, next) => {
   if (req.usuario.rol !== "administrador") {
+    console.log("este es el rol", req.usuario.rol);
     return res.status(403).json({ message: "Solo admin" });
   }
   next();
