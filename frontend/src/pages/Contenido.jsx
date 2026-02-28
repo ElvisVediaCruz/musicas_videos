@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { getContenido } from "../services/contentService";
+import { getContenido, createContenido } from "../services/contentService";
 import MusicaList from "../components/MusicaList";
 import PeliculaList from "../components/PeliculaList";
 import MusicaPlayer from "../components/MusicaPlayer";
@@ -13,7 +13,7 @@ function Contenido() {
   const [file, setFile] = useState(null);
   const [form, setForm] = useState({
     tipo: "musica",
-    nombre: "",
+    titulo: "",
     genero: "",
     artista: "",
     album: "",
@@ -47,10 +47,29 @@ function Contenido() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Enviando:", form, file);
-    // Aquí iría tu lógica de axios para subir el archivo
+    try {
+    const formData = new FormData();
+
+    // 🔹 Agregar todos los campos del formulario
+    Object.keys(form).forEach((key) => {
+      formData.append(key, form[key]);
+    });
+
+    // 🔹 Agregar archivo
+    if (file) {
+      formData.append("archivo", file);
+    }
+
+    await createContenido(formData);
+
+    alert("Contenido creado correctamente");
+    loadContenido(); // Recargar lista
+  } catch (error) {
+    console.log(error);
+    alert("Error al crear contenido");
+  }
   };
 
   const musicas = contenido.filter(item => item.extencion === "mp3");
@@ -65,8 +84,8 @@ function Contenido() {
         <form onSubmit={handleSubmit} style={styles.form}>
           <select 
             name="tipo" 
-            onChange={handleChange} 
-            value={form.tipo} 
+            onChange={handleChange}
+            value={form.tipo}
             style={styles.input}
           >
             <option value="musica">🎵 Música</option>
@@ -75,7 +94,7 @@ function Contenido() {
 
           <input
             type="text"
-            name="nombre"
+            name="titulo"
             placeholder="Nombre del contenido"
             onChange={handleChange}
             required
@@ -95,7 +114,7 @@ function Contenido() {
             <>
               <input type="text" name="artista" placeholder="Artista" onChange={handleChange} style={styles.input} />
               <input type="text" name="album" placeholder="Álbum" onChange={handleChange} style={styles.input} />
-              <input type="text" name="duracion" placeholder="Duración (Ej: 3:45)" onChange={handleChange} style={styles.input} />
+              
             </>
           ) : (
             <>

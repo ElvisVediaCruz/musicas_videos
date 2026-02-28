@@ -18,6 +18,7 @@ export const createContenido = async (req, res) => {
         const formato = metadata.metadata.format;
         console.log("archivo", archivo)
         console.log(metadata.metadata)
+        let tp = archivo.mimetype.startsWith("audio")? "audio" : "video";
         const datos = {
             artista: artista,
             titulo: titulo,
@@ -29,10 +30,9 @@ export const createContenido = async (req, res) => {
             extencion: formato.format_name,
             rutaAlmacenamiento: formato.filename,
             nombreAlmacenamiento: archivo.filename,
-            tipo: formato.format_name,
+            tipo: tp,
             id_user: userId
         }
-        console.log(datos)
         await Contenido.create({
             ...datos
         });
@@ -78,8 +78,14 @@ export const deleteContenido = async (req, res) => {
     }
 }
 export const getContenido = async (req, res) => {
+    const {tipo} = req.params;
+    console.log(tipo);
     try {
-        const result = await Contenido.findAll();
+        const result = await Contenido.findAll(
+            {
+                where: {tipo: tipo}
+            }
+        );
         res.status(200).json({
             okey: true,
             result

@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Usuarios from "../pages/Usuarios";
 import Contenido from "../pages/Contenido";
 import MusicPlayer2 from "../pages/MusicaPlayer2";
+import VideoPlayer from "../pages/VideoPlayer";
 function Dashboard() {
   return <h1>Bienvenido al Dashboard</h1>;
 }
@@ -19,6 +20,7 @@ function AppRouter() {
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="contenido" element={<Contenido />} />
           <Route path="reproductor" element={<MusicPlayer2 />} />
+          <Route path="peliculas" element={<VideoPlayer/>}/>
         </Route>
 
       </Routes>

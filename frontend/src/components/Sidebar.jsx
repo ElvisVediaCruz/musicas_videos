@@ -26,8 +26,11 @@ function Sidebar() {
           </li>
 
           <li>
-  <NavLink to="/dashboard/reproductor" style={styles.link}>Reproductor</NavLink>
-</li>
+            <NavLink to="/dashboard/reproductor" style={styles.link}>Reproductor</NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/peliculas" style={styles.link}>Peliculas</NavLink>
+          </li>
         </ul>
       </nav>
     </div>
