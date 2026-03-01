@@ -1,4 +1,6 @@
-import { body } from "express-validator";
+import { body, validationResult } from "express-validator";
+import { AppError } from "../../utils/AppError.js";
+import jwt from "jsonwebtoken";
 
 export const validateCreateUser = [
   body("usuario")
@@ -14,10 +16,31 @@ export const validateCreateUser = [
     .withMessage("Rol inválido")
 ];
 
-export const soloAdmin = (req, res, next) => {
-  if (req.usuario.rol !== "administrador") {
-    console.log("este es el rol", req.usuario.rol);
-    return res.status(403).json({ message: "Solo admin" });
+export const validarCampos = (req, res, next) => {
+  const errores = validationResult(req);
+  if (!errores.isEmpty()) {
+    throw new AppError("Errores de validacion", 400, errores.array());
   }
   next();
+}
+
+export const soloAdmin = (req, res, next) => {
+  if (req.usuario.rol !== "administrador") {
+    throw new AppError("Solo admin", 403);
+  }
+  next();
+};
+
+export const verificarToken = (req, res, next) => {
+    const token = req.cookies.token;
+    if (!token) {
+      throw new AppError("No autorizado", 401);
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.usuario = decoded;
+        next();
+    } catch (error) {
+      throw new AppError("Token inválido", 401);
+    }
 };

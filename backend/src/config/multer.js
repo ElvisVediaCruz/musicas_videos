@@ -14,8 +14,6 @@ const storage = multer.diskStorage({
   }
 });
 const fileFilter = (req, file, cb) => {
-  console.log("Filtrando archivo:", file.mimetype);
-
   if (file.mimetype.startsWith("audio/") || file.mimetype.startsWith("video/")) {
     cb(null, true);
   } else {
@@ -27,6 +25,6 @@ export const uploadMiddleware = multer({
     storage,
     fileFilter,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
+        fileSize: 2 * 1024 * 1024 * 1024
     }
 });

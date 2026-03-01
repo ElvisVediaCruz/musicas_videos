@@ -7,7 +7,6 @@ import app from "./src/app.js";
 import sequelize from "./src/config/database.js";
 import "./src/models/models.index.js";
 
-
 try {
   await sequelize.sync();
   console.log("✅ Conexión a la base de datos exitosa");

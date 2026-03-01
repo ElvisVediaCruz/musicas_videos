@@ -11,6 +11,6 @@ const route = express.Router();
 route.post("/upload/:userId", verificarToken, soloAdmin, uploadMiddleware.single("archivo"), createContenido);
 route.put("updateContenido", updateContenido);
 route.delete("/deleteContenido", deleteContenido);
-route.get("/getContent/:tipo", verificarToken, soloAdmin, getContenido)
+route.get("/getContent", verificarToken, soloAdmin, getContenido)
 
 export default route;
